@@ -21,6 +21,7 @@
     "pre-commit": "0.0.9"
   },
   "dependencies": {
+    "ejs": "^1.0.0",
     "express": "^4.10.6"
   }
 }
