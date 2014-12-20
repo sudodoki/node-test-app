@@ -5,7 +5,20 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "jshint": "jshint *.js",
+    "jscs": "jscs --preset=airbnb *.js"
+  },
+  "pre-commit": [
+    "jshint",
+    "jscs"
+  ],
+  "devDependencies": {
+    "jscs": "^1.8.1",
+    "jshint": "^2.5.11",
+    "nodemon": "^1.2.1",
+    "pre-commit": "0.0.9"
   },
   "dependencies": {
     "express": "^4.10.6"
