@@ -9,41 +9,38 @@ var express = require('express'),
     LeveldbStore = require('connect-leveldb')(session),
     app = express(),
     bodyParser = require('body-parser'),
-    port = 8080;
+    port = 8080,
+    HARDCODED_USERS;
 
-
-var HARDCODED_USERS = [
+HARDCODED_USERS = [
   { id: 1, username: 'admin', password: 'admin', email: 'admin@this.shit' }
 ];
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
 
-passport.deserializeUser(function (id, done) {
-  var user = HARDCODED_USERS.filter(function (u) { return u.id === id; });
+passport.deserializeUser(function(id, done) {
+  var user = HARDCODED_USERS.filter(function(u) { return u.id === id; });
   if (!user) { return done(new Error('User does not exist')); }
   done(null, user);
 });
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
-    var user = HARDCODED_USERS.filter(function (u) {
+    var user = HARDCODED_USERS.filter(function(u) {
       return u.username === username;
     })[0];
     if (user && user.password === password) {
-      return process.nextTick(function () {
+      return process.nextTick(function() {
         done(null, user);
       });
     }
-    return process.nextTick(function () {
+    return process.nextTick(function() {
       done(null, false);
     });
   }
 ));
-
-
-
 
 app.set('views', path.join(__dirname, 'views'));
 app.engine('html', require('ejs').renderFile);
@@ -63,11 +60,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/login', function(req, res) {
-  res.render('login.html');
+  res.render('login.html', {user: req.user });
 });
 
-app.post('/login',
-  function (req, res, next) {
+app.get('/logout', function (req, res) {
+  req.logout();
+  console.log('loggint out');
+  res.redirect('/');
+});
+
+app.post('/login', function(req, res, next) {
     console.log(req.body);
     next();
   },
